@@ -1,0 +1,182 @@
+#include <Arduino.h>
+
+#include <WiFi.h>
+#include "PubSubClient.h" // Include the PubSubClient library for MQTT
+
+#include "./include/credentials.h" // Define WIFI_SSID, WIFI_PASSWORD, MQTT_USER and MQTT_PASSWD
+
+// PIN assignment
+#define CYD_LED_BLUE 17
+#define CYD_LED_RED 4
+#define CYD_LED_GREEN 16
+
+#define LDR_PIN 34
+
+#define LOOP_PERIOD 10000 // in microseconds
+
+// LDR
+int counterForReading;
+int desiredReadingInterval = 1000; // in milliseconds
+const int readingPeriodicity = 1000 * desiredReadingInterval / LOOP_PERIOD;
+int sensorValue;
+
+// Publishing LDR
+int counterForPublishing;
+int desiredPublishingInterval = 1000; // in milliseconds
+const int publishingPeriodicity = 1000 * desiredPublishingInterval / LOOP_PERIOD; 
+
+
+// MQTT Broker  
+const char* mqtt_broker = "10.1.14.6"; // Local broker IP address
+const int mqtt_port = 1883; 
+const char* mqtt_clientid = "ESP32_Client_1";
+const char* sub_topic = "LED";
+const char* pub_topic = "pubtopic";
+
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+// Others
+unsigned long startAttemptTime;
+
+// Cadencement 
+int counterForPrinting;
+int desiredPrintingInterval = 2000; // in milliseconds
+const int printingPeriodicity = 1000 * desiredPrintingInterval / LOOP_PERIOD; // The variables will be sent to the serial link one out of printingPeriodicity loop runs. Every printingPeriodicity * LOOP_PERIOD microseconds
+unsigned long current_time, previous_time, initial_time;
+
+String mainLoopBuffer = "";
+String callbackBuffer = "";
+
+int ValueToSend;
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  callbackBuffer = "Message received :\n";
+  callbackBuffer += " - Topic: " + String(topic) + "\n";
+  callbackBuffer += " - Payload: ";
+  String msg;
+
+  if (String(topic) == "LED"){
+    for (int i = 0; i < length; i++) {
+      msg += (char)payload[i];
+    }
+    callbackBuffer += String(msg) + "\n";
+    callbackBuffer += "Setting LED to status: ";
+    if (msg == "ON"){ 
+      // Green LED 
+      digitalWrite(CYD_LED_RED, HIGH); // The LEDs are "active low", meaning HIGH == off, LOW == on
+      digitalWrite(CYD_LED_GREEN, LOW);
+      digitalWrite(CYD_LED_BLUE, HIGH);
+      callbackBuffer += "ON\n";
+    }
+    else if (msg == "OFF"){ 
+      // Red LED 
+      digitalWrite(CYD_LED_RED, LOW); // The LEDs are "active low", meaning HIGH == off, LOW == on
+      digitalWrite(CYD_LED_GREEN, HIGH);
+      digitalWrite(CYD_LED_BLUE, HIGH);
+      callbackBuffer += "OFF\n";
+    }
+  }
+}
+
+void setup() {
+  delay(5000);
+  // Serial initialisation
+  Serial.begin(115200);
+  Serial.println();
+  // Connect to WiFi
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("Connecting to Wi-Fi");
+  startAttemptTime = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < 10000) { // Wait 10 seconds max
+    Serial.print(".");
+    delay(500);
+  }
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("Succesfully connected to Wi-Fi !");
+    Serial.println(" - IP Address : " + String(WiFi.localIP()));
+  } else {
+    Serial.println("Failed to connect to Wi-Fi : connection timed out");
+    Serial.println("Restarting device...");
+    ESP.restart();  // Or enter deep sleep
+  }
+
+  // Connect to MQTT broker
+  client.setServer(mqtt_broker, mqtt_port);
+  client.setCallback(callback);
+  Serial.print("Connecting to MQTT broker");
+  startAttemptTime = millis();
+  while (!client.connect(mqtt_clientid, MQTT_USER, MQTT_PASSWD) && millis() - startAttemptTime < 30000) { // Wait 30 seconds max
+    Serial.print(".");
+    delay(500);
+  }
+
+  if (client.connected()) {      //user id must be unique in case of many users under one topic to avoid conflict/crosstalk information
+    Serial.println("Succesfully connected to MQTT !");
+    client.subscribe(sub_topic);            //SUBSCRIBE TOPIC
+  } else {
+    Serial.println("Failed to connect to MQTT broker with state : " + String(client.state()));
+    Serial.println("Restarting device...");
+    ESP.restart();  // Or enter deep sleep
+  }
+
+  // Increase read sensitivity
+  analogSetAttenuation(ADC_0db);
+
+  // LDR pin initialisation
+  pinMode(LDR_PIN, INPUT);
+
+  // LDR
+  sensorValue = analogRead(LDR_PIN);
+
+  // LED pins initialisation
+  pinMode(CYD_LED_RED, OUTPUT);
+  pinMode(CYD_LED_GREEN, OUTPUT);
+  pinMode(CYD_LED_BLUE, OUTPUT);
+
+  // 
+  counterForPrinting = 0;
+  counterForReading = 0;
+
+}
+
+void loop() {
+  mainLoopBuffer = "";
+  // Cadencement
+  previous_time = current_time;
+  current_time = micros();
+
+  counterForReading++;
+  if (counterForReading > readingPeriodicity) {
+    sensorValue = analogRead(LDR_PIN);
+    counterForReading = 0; // Reset counter
+  }
+  mainLoopBuffer += "Analog Read : " + String(sensorValue) + "\n";
+
+  counterForPublishing++;
+  if (counterForPublishing > publishingPeriodicity) {
+    ValueToSend = map(sensorValue,0,5000,0,100);
+    char payload[10]; // buffer array size is proportional to message that wanted to be sent
+    snprintf(payload, sizeof(payload), "%d", ValueToSend);
+    client.publish(pub_topic, payload);    //PUBLISH TOPIC
+    counterForPublishing = 0; // Reset counter
+  }
+  mainLoopBuffer = mainLoopBuffer + "Value to send : " + String(ValueToSend) + "\n";
+
+  client.loop(); // Keeps MQTT connection alive
+
+  // Affichage
+  counterForPrinting++;
+  if (counterForPrinting > printingPeriodicity) {  // Reset the counter and print
+    Serial.println("---------" + String(millis())+ "---------");
+    Serial.println(mainLoopBuffer);
+    Serial.println(callbackBuffer);
+    counterForPrinting = 0; // Reset counter
+  }
+
+  // Cadencement
+  unsigned int sleep_time = LOOP_PERIOD - (micros() - current_time);
+  if (sleep_time > 0 && sleep_time < LOOP_PERIOD) delayMicroseconds(sleep_time); // On patiente le temps restant pour respecter la fréquence d'itération (SUPPOSE QUE LES INSTRUCTIONS SONT RÉALISABLES DURANT LA PERIODE)
+}
+
