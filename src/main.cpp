@@ -17,13 +17,13 @@
 // LDR
 int counterForReading;
 int desiredReadingInterval = 1000; // in milliseconds
-const int readingPeriodicity = 1000 * desiredReadingInterval / LOOP_PERIOD;
+const int readingPeriodicity =  desiredReadingInterval / (LOOP_PERIOD / 1000);
 int sensorValue;
 
 // Publishing LDR
 int counterForPublishing;
 int desiredPublishingInterval = 1000; // in milliseconds
-const int publishingPeriodicity = 1000 * desiredPublishingInterval / LOOP_PERIOD; 
+const int publishingPeriodicity =  desiredPublishingInterval / (LOOP_PERIOD / 1000); 
 
 
 // MQTT Broker  
@@ -135,13 +135,36 @@ void setup() {
   pinMode(CYD_LED_GREEN, OUTPUT);
   pinMode(CYD_LED_BLUE, OUTPUT);
 
-  // 
+  // Set LEDs off
+  digitalWrite(CYD_LED_RED, HIGH);
+  digitalWrite(CYD_LED_GREEN, HIGH);
+  digitalWrite(CYD_LED_BLUE, HIGH);
+
   counterForPrinting = 0;
   counterForReading = 0;
 
 }
 
+void reconnectMQTT() {
+  while (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    if (client.connect(mqtt_clientid, MQTT_USER, MQTT_PASSWD)) {
+      Serial.println("connected");
+      client.subscribe(sub_topic);
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      delay(5000);
+    }
+  }
+}
+
 void loop() {
+  // Keeping MQTT connection alive
+  if (!client.connected()) { reconnectMQTT(); }
+  client.loop(); 
+
   mainLoopBuffer = "";
   // Cadencement
   previous_time = current_time;
@@ -156,15 +179,13 @@ void loop() {
 
   counterForPublishing++;
   if (counterForPublishing > publishingPeriodicity) {
-    ValueToSend = map(sensorValue,0,5000,0,100);
+    ValueToSend = map(sensorValue,0,4095,0,100);
     char payload[10]; // buffer array size is proportional to message that wanted to be sent
     snprintf(payload, sizeof(payload), "%d", ValueToSend);
     client.publish(pub_topic, payload);    //PUBLISH TOPIC
     counterForPublishing = 0; // Reset counter
   }
   mainLoopBuffer = mainLoopBuffer + "Value to send : " + String(ValueToSend) + "\n";
-
-  client.loop(); // Keeps MQTT connection alive
 
   // Affichage
   counterForPrinting++;
