@@ -3,7 +3,7 @@
 #include <WiFi.h>
 #include "PubSubClient.h" // Include the PubSubClient library for MQTT
 
-#include "./include/credentials.h" // Define WIFI_SSID, WIFI_PASSWORD, MQTT_USER and MQTT_PASSWD
+#include "../include/credentials.h" // Define WIFI_SSID, WIFI_PASSWORD, MQTT_USER and MQTT_PASSWD
 
 // PIN assignment
 #define CYD_LED_BLUE 17
@@ -27,7 +27,7 @@ const int publishingPeriodicity =  desiredPublishingInterval / (LOOP_PERIOD / 10
 
 
 // MQTT Broker  
-const char* mqtt_broker = "10.1.14.6"; // Local broker IP address
+const char* mqtt_broker = "10.1.14.50"; // Local broker IP address
 const int mqtt_port = 1883; 
 const char* mqtt_clientid = "ESP32_Client_1";
 const char* sub_topic = "LED";

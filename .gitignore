@@ -1,4 +1,4 @@
-.pio
-.vscode
-
-include/credentials.h
+.vscode/
+**/.pio/
+node-RED/backups/
+**/credentials.h
