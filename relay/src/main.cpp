@@ -14,7 +14,7 @@
 const char* mqtt_broker = "10.1.14.50"; // Local broker IP address
 const int mqtt_port = 1883; 
 const char* mqtt_clientid = "ESP32_Client_Relay";
-const char* sub_topic = "RELAY";
+const char* sub_topic = "test/esp32/relay-ac/relay/state";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -39,21 +39,21 @@ void callback(char* topic, byte* payload, unsigned int length) {
   callbackBuffer += " - Payload: ";
   String msg;
 
-  if (String(topic) == "RELAY"){
+  if (String(topic) == "test/esp32/relay-ac/relay/state"){
     for (int i = 0; i < length; i++) {
       msg += (char)payload[i];
     }
     callbackBuffer += String(msg) + "\n";
     callbackBuffer += "Setting LED to status: ";
-    if (msg == "ON"){ 
+    if (msg == "OPEN"){ 
       digitalWrite(RELAY_PIN, HIGH); // Turn on the relay
       digitalWrite(LED_PIN, HIGH); // Turn on the LED
-      callbackBuffer += "ON\n";
+      callbackBuffer += "OPEN\n";
     }
-    else if (msg == "OFF"){ 
+    else if (msg == "CLOSE"){ 
       digitalWrite(RELAY_PIN, LOW); // Turn off the relay
       digitalWrite(LED_PIN, LOW); // Turn off the LED
-      callbackBuffer += "OFF\n";
+      callbackBuffer += "CLOSE\n";
     }
   }
 }

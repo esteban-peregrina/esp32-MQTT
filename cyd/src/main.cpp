@@ -30,8 +30,8 @@ const int publishingPeriodicity =  desiredPublishingInterval / (LOOP_PERIOD / 10
 const char* mqtt_broker = "10.1.14.50"; // Local broker IP address
 const int mqtt_port = 1883; 
 const char* mqtt_clientid = "ESP32_Client_1";
-const char* sub_topic = "LED";
-const char* pub_topic = "pubtopic";
+const char* sub_topic = "test/esp32/cyd/LED/RGB-LED/color";
+const char* pub_topic = "test/esp32/cyd/sensor/LDR/value";
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -56,7 +56,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   callbackBuffer += " - Payload: ";
   String msg;
 
-  if (String(topic) == "LED"){
+  if (String(topic) == "test/esp32/cyd/LED/RGB-LED/color"){
     for (int i = 0; i < length; i++) {
       msg += (char)payload[i];
     }
