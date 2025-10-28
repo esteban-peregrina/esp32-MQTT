@@ -1,0 +1,4560 @@
+[
+    {
+        "id": "077885e984bf01d2",
+        "type": "subflow",
+        "name": "advanced mqtt out",
+        "info": "msg.topic and msg.payload must be defined",
+        "category": "",
+        "in": [
+            {
+                "x": 440,
+                "y": 160,
+                "wires": [
+                    {
+                        "id": "5d9144931885112b"
+                    }
+                ]
+            }
+        ],
+        "out": [],
+        "env": [],
+        "meta": {},
+        "color": "#F4B2FF",
+        "icon": "node-red/bridge.svg",
+        "status": {
+            "x": 780,
+            "y": 420,
+            "wires": [
+                {
+                    "id": "2a398f9b22f32943",
+                    "port": 0
+                }
+            ]
+        }
+    },
+    {
+        "id": "0c781489b1d1afb8",
+        "type": "debug",
+        "z": "077885e984bf01d2",
+        "name": "print publish topic",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "topic",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1250,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "d1b5153af47b8637",
+        "type": "comment",
+        "z": "077885e984bf01d2",
+        "name": "msg.broker and/or msg.topic must be defined",
+        "info": "",
+        "x": 230,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "7091246447cd07a4",
+        "type": "debug",
+        "z": "077885e984bf01d2",
+        "name": "print connection status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "status.text",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 870,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "2a398f9b22f32943",
+        "type": "status",
+        "z": "077885e984bf01d2",
+        "name": "watch connection status",
+        "scope": [
+            "4cd701ce976298ce"
+        ],
+        "x": 550,
+        "y": 360,
+        "wires": [
+            [
+                "7091246447cd07a4",
+                "db0afc8ee5c1551c",
+                "2789a984c52e3c7b"
+            ]
+        ]
+    },
+    {
+        "id": "5d9144931885112b",
+        "type": "switch",
+        "z": "077885e984bf01d2",
+        "name": "if broker property is undefined",
+        "property": "broker",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "istype",
+                "v": "undefined",
+                "vt": "undefined"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 570,
+        "y": 220,
+        "wires": [
+            [
+                "9f198000cc2e4e70",
+                "c4aa7745359d6d53"
+            ],
+            [
+                "51451d458ddfb408",
+                "6bc112aff1e6c2b9"
+            ]
+        ]
+    },
+    {
+        "id": "51451d458ddfb408",
+        "type": "change",
+        "z": "077885e984bf01d2",
+        "name": "store broker configuration and echo",
+        "rules": [
+            {
+                "t": "move",
+                "p": "broker",
+                "pt": "msg",
+                "to": "broker",
+                "tot": "flow"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "broker",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 950,
+        "y": 300,
+        "wires": [
+            [
+                "4e1e6754165e21af",
+                "65b06eeceb3f6b8d"
+            ]
+        ]
+    },
+    {
+        "id": "db0afc8ee5c1551c",
+        "type": "switch",
+        "z": "077885e984bf01d2",
+        "name": "compare status to \"disconnected\"",
+        "property": "status.text",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "node-red:common.status.disconnected",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 900,
+        "y": 540,
+        "wires": [
+            [
+                "9c4f57d5f6326711"
+            ]
+        ]
+    },
+    {
+        "id": "9c4f57d5f6326711",
+        "type": "change",
+        "z": "077885e984bf01d2",
+        "name": "retrieve broker configuration and connect",
+        "rules": [
+            {
+                "t": "move",
+                "p": "broker",
+                "pt": "flow",
+                "to": "broker",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "action",
+                "pt": "msg",
+                "to": "connect",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 940,
+        "y": 600,
+        "wires": [
+            [
+                "4cd701ce976298ce"
+            ]
+        ]
+    },
+    {
+        "id": "9f198000cc2e4e70",
+        "type": "switch",
+        "z": "077885e984bf01d2",
+        "name": "compare status to \"connected\"",
+        "property": "status.text",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "node-red:common.status.connected",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 930,
+        "y": 260,
+        "wires": [
+            [
+                "0c781489b1d1afb8",
+                "4cd701ce976298ce"
+            ],
+            [
+                "049e388e784d93f5"
+            ]
+        ]
+    },
+    {
+        "id": "049e388e784d93f5",
+        "type": "debug",
+        "z": "077885e984bf01d2",
+        "name": "error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1210,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "6bc112aff1e6c2b9",
+        "type": "debug",
+        "z": "077885e984bf01d2",
+        "name": "is defined",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "4e1e6754165e21af",
+        "type": "debug",
+        "z": "077885e984bf01d2",
+        "name": "print flow.broker",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1280,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "65b06eeceb3f6b8d",
+        "type": "change",
+        "z": "077885e984bf01d2",
+        "name": "send disconnect order",
+        "rules": [
+            {
+                "t": "set",
+                "p": "action",
+                "pt": "msg",
+                "to": "disconnect",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1300,
+        "y": 340,
+        "wires": [
+            [
+                "49373c9bc3a077e4",
+                "4cd701ce976298ce"
+            ]
+        ]
+    },
+    {
+        "id": "c4aa7745359d6d53",
+        "type": "debug",
+        "z": "077885e984bf01d2",
+        "name": "is undefined",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "49373c9bc3a077e4",
+        "type": "debug",
+        "z": "077885e984bf01d2",
+        "name": "print sent msg",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1620,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "e4c44596d64aefac",
+        "type": "comment",
+        "z": "077885e984bf01d2",
+        "name": "checker si topic defined",
+        "info": "",
+        "x": 900,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "4cd701ce976298ce",
+        "type": "mqtt out",
+        "z": "077885e984bf01d2",
+        "name": "mqtt out",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "3d447ca3b22c0814",
+        "x": 1600,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "2789a984c52e3c7b",
+        "type": "change",
+        "z": "077885e984bf01d2",
+        "name": "copy message status to flow status",
+        "rules": [
+            {
+                "t": "set",
+                "p": "status",
+                "pt": "flow",
+                "to": "status",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 900,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5b4baad7e4c37dfa",
+        "type": "subflow",
+        "name": "advanced mqtt in",
+        "info": "msg.topic must be defined",
+        "category": "",
+        "in": [
+            {
+                "x": 560,
+                "y": 360,
+                "wires": [
+                    {
+                        "id": "0948fa42ef5e37c5"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1880,
+                "y": 700,
+                "wires": [
+                    {
+                        "id": "8d4269d094e75b68",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#F4B2FF",
+        "icon": "node-red/bridge.svg",
+        "status": {
+            "x": 860,
+            "y": 620,
+            "wires": [
+                {
+                    "id": "0aa7bfe2d8c09a09",
+                    "port": 0
+                }
+            ]
+        }
+    },
+    {
+        "id": "8d4269d094e75b68",
+        "type": "mqtt in",
+        "z": "5b4baad7e4c37dfa",
+        "name": "mqtt in",
+        "topic": "",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3d447ca3b22c0814",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 1,
+        "x": 1710,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b8b0147b55b30a10",
+        "type": "debug",
+        "z": "5b4baad7e4c37dfa",
+        "name": "print subscribe topic",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "topic",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1380,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "44388310749cdc2b",
+        "type": "comment",
+        "z": "5b4baad7e4c37dfa",
+        "name": "msg.broker and/or msg.topic must be defined",
+        "info": "",
+        "x": 350,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "68757dfe263f573a",
+        "type": "debug",
+        "z": "5b4baad7e4c37dfa",
+        "name": "print connection status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "status.text",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 950,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "0aa7bfe2d8c09a09",
+        "type": "status",
+        "z": "5b4baad7e4c37dfa",
+        "name": "watch connection status",
+        "scope": [
+            "8d4269d094e75b68"
+        ],
+        "x": 670,
+        "y": 560,
+        "wires": [
+            [
+                "68757dfe263f573a",
+                "4427179a4034432a",
+                "d1d1610c81aee082"
+            ]
+        ]
+    },
+    {
+        "id": "0948fa42ef5e37c5",
+        "type": "switch",
+        "z": "5b4baad7e4c37dfa",
+        "name": "if broker property is undefined",
+        "property": "broker",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "istype",
+                "v": "undefined",
+                "vt": "undefined"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 690,
+        "y": 420,
+        "wires": [
+            [
+                "0f7677884a8717ed",
+                "e0f08fe8a29bbc42"
+            ],
+            [
+                "234668ee1c3da49f",
+                "f795aa2f518f4ced"
+            ]
+        ]
+    },
+    {
+        "id": "234668ee1c3da49f",
+        "type": "change",
+        "z": "5b4baad7e4c37dfa",
+        "name": "store broker configuration and echo",
+        "rules": [
+            {
+                "t": "move",
+                "p": "broker",
+                "pt": "msg",
+                "to": "broker",
+                "tot": "flow"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "broker",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1070,
+        "y": 500,
+        "wires": [
+            [
+                "7a11067d487e9f39",
+                "92339c7f971247a5"
+            ]
+        ]
+    },
+    {
+        "id": "e09dda517fb31f29",
+        "type": "change",
+        "z": "5b4baad7e4c37dfa",
+        "name": "retrieve broker configuration and connect",
+        "rules": [
+            {
+                "t": "move",
+                "p": "broker",
+                "pt": "flow",
+                "to": "broker",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "action",
+                "pt": "msg",
+                "to": "connect",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1020,
+        "y": 800,
+        "wires": [
+            [
+                "8d4269d094e75b68"
+            ]
+        ]
+    },
+    {
+        "id": "0f7677884a8717ed",
+        "type": "switch",
+        "z": "5b4baad7e4c37dfa",
+        "name": "compare status to \"connected\"",
+        "property": "status.text",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "node-red:common.status.connected",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1050,
+        "y": 460,
+        "wires": [
+            [
+                "d0dcfbd2a105bcfa",
+                "b8b0147b55b30a10"
+            ],
+            [
+                "9d32d4f8b3ea77a7"
+            ]
+        ]
+    },
+    {
+        "id": "d0dcfbd2a105bcfa",
+        "type": "change",
+        "z": "5b4baad7e4c37dfa",
+        "name": "subscribe",
+        "rules": [
+            {
+                "t": "set",
+                "p": "action",
+                "pt": "msg",
+                "to": "subscribe",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1340,
+        "y": 420,
+        "wires": [
+            [
+                "8d4269d094e75b68"
+            ]
+        ]
+    },
+    {
+        "id": "9d32d4f8b3ea77a7",
+        "type": "debug",
+        "z": "5b4baad7e4c37dfa",
+        "name": "error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1330,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "4ce0ebb3280e174f",
+        "type": "comment",
+        "z": "5b4baad7e4c37dfa",
+        "name": "faire unsubscribe avant ?",
+        "info": "",
+        "x": 1390,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "f795aa2f518f4ced",
+        "type": "debug",
+        "z": "5b4baad7e4c37dfa",
+        "name": "is defined",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "7a11067d487e9f39",
+        "type": "debug",
+        "z": "5b4baad7e4c37dfa",
+        "name": "print flow.broker",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1400,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "92339c7f971247a5",
+        "type": "change",
+        "z": "5b4baad7e4c37dfa",
+        "name": "send disconnect order",
+        "rules": [
+            {
+                "t": "set",
+                "p": "action",
+                "pt": "msg",
+                "to": "disconnect",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1420,
+        "y": 540,
+        "wires": [
+            [
+                "8d4269d094e75b68",
+                "0a8474299acb79a8"
+            ]
+        ]
+    },
+    {
+        "id": "e0f08fe8a29bbc42",
+        "type": "debug",
+        "z": "5b4baad7e4c37dfa",
+        "name": "is undefined",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 950,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "0a8474299acb79a8",
+        "type": "debug",
+        "z": "5b4baad7e4c37dfa",
+        "name": "print sent msg",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1740,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "5cef0af4389b4eec",
+        "type": "comment",
+        "z": "5b4baad7e4c37dfa",
+        "name": "checker si topic defined",
+        "info": "",
+        "x": 1020,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "4427179a4034432a",
+        "type": "switch",
+        "z": "5b4baad7e4c37dfa",
+        "name": "compare status to \"disconnected\"",
+        "property": "status.text",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "node-red:common.status.disconnected",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 980,
+        "y": 740,
+        "wires": [
+            [
+                "e09dda517fb31f29"
+            ]
+        ]
+    },
+    {
+        "id": "d1d1610c81aee082",
+        "type": "change",
+        "z": "5b4baad7e4c37dfa",
+        "name": "copy message status to flow status",
+        "rules": [
+            {
+                "t": "set",
+                "p": "status",
+                "pt": "flow",
+                "to": "status",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 980,
+        "y": 680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3d447ca3b22c0814",
+        "type": "mqtt-broker",
+        "name": "default",
+        "broker": "localhost",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "701e65a3bdca6392",
+        "type": "tab",
+        "label": "Hot Water",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "1ea7e85362bc350d",
+        "type": "group",
+        "z": "701e65a3bdca6392",
+        "name": "",
+        "style": {
+            "fill": "#ffefbf",
+            "label": true
+        },
+        "nodes": [
+            "ea57d427c10e0cd8",
+            "1827385b18661559",
+            "c331a6ed5cc80151",
+            "f947ce662a41807a",
+            "b2021661963c6b29",
+            "51bbe6fecc9071c5",
+            "691739f004438b9a"
+        ],
+        "x": 854,
+        "y": 1499,
+        "w": 552,
+        "h": 202
+    },
+    {
+        "id": "50040848af2f0e86",
+        "type": "group",
+        "z": "701e65a3bdca6392",
+        "name": "",
+        "style": {
+            "fill": "#ffefbf",
+            "label": true
+        },
+        "nodes": [
+            "711490e7d0d05a33",
+            "1ba51d0bf4eccd66",
+            "2b10285d8b0b4b27"
+        ],
+        "x": 1154,
+        "y": 779,
+        "w": 732,
+        "h": 122
+    },
+    {
+        "id": "b2665a1557c56b6c",
+        "type": "switch",
+        "z": "701e65a3bdca6392",
+        "name": "compare payload to temperatureSetpoint and temperatureMax",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "btwn",
+                "v": "temperatureSetpoint",
+                "vt": "flow",
+                "v2": "temperatureMax",
+                "v2t": "flow"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 990,
+        "y": 1440,
+        "wires": [
+            [
+                "03bfa5cd4b63f4c2"
+            ],
+            [
+                "f55d1867515c29fe"
+            ]
+        ]
+    },
+    {
+        "id": "f55d1867515c29fe",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set resistorsCommand to \"ON\"",
+        "rules": [
+            {
+                "t": "set",
+                "p": "resistorsCommand",
+                "pt": "msg",
+                "to": "ON",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1450,
+        "y": 1460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "03bfa5cd4b63f4c2",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set resistorsCommand to \"OFF\"",
+        "rules": [
+            {
+                "t": "set",
+                "p": "resistorsCommand",
+                "pt": "flow",
+                "to": "OFF",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1450,
+        "y": 1420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c43d555e276648bd",
+        "type": "debug",
+        "z": "701e65a3bdca6392",
+        "name": "print temperature measure",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1300,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "7bc57a94f6d3a763",
+        "type": "ui_button",
+        "z": "701e65a3bdca6392",
+        "name": "confirm general command",
+        "group": "1b8fdeec32c609c1",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Confirmer",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "#0000FF",
+        "className": "",
+        "icon": "",
+        "payload": "Commande envoyée !",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 360,
+        "y": 3880,
+        "wires": [
+            [
+                "c606b13aec40f275",
+                "031f1b86878e9e34",
+                "14e53ead4e4c85c8",
+                "3cd242f01f32e5d0"
+            ]
+        ]
+    },
+    {
+        "id": "c606b13aec40f275",
+        "type": "ui_toast",
+        "z": "701e65a3bdca6392",
+        "position": "top right",
+        "displayTime": "5",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "show confirm notification",
+        "x": 690,
+        "y": 4180,
+        "wires": []
+    },
+    {
+        "id": "031f1b86878e9e34",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set temperature setpoint",
+        "rules": [
+            {
+                "t": "set",
+                "p": "temperatureSetpoint",
+                "pt": "flow",
+                "to": "temporaryTemperatureSetpoint",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 690,
+        "y": 3920,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "14e53ead4e4c85c8",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set heating launch date",
+        "rules": [
+            {
+                "t": "set",
+                "p": "heatingLaunchDate",
+                "pt": "flow",
+                "to": "temporaryHeatingLaunchDate",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 690,
+        "y": 3960,
+        "wires": [
+            [
+                "a4ebfd0aa74526c8"
+            ]
+        ]
+    },
+    {
+        "id": "2c1ddeceb7bca2c7",
+        "type": "ui_switch",
+        "z": "701e65a3bdca6392",
+        "name": "bypass launch date",
+        "label": "Contourner la planification",
+        "tooltip": "",
+        "group": "1b8fdeec32c609c1",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 330,
+        "y": 3740,
+        "wires": [
+            [
+                "ee00a601cc273019"
+            ]
+        ]
+    },
+    {
+        "id": "ee00a601cc273019",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set temporaryBypassLaunchDate",
+        "rules": [
+            {
+                "t": "set",
+                "p": "temporaryBypassLaunchDate",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 400,
+        "y": 3800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3cd242f01f32e5d0",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set bypassLaunchDate",
+        "rules": [
+            {
+                "t": "set",
+                "p": "bypassLaunchDate",
+                "pt": "flow",
+                "to": "temporaryBypassLaunchDate",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 680,
+        "y": 4140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "764e7dddffad2a79",
+        "type": "ui_gauge",
+        "z": "701e65a3bdca6392",
+        "name": "show temperature measure",
+        "group": "e9e91d8cdb93f5cb",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "gtype": "donut",
+        "title": "Température de l'eau",
+        "label": "°C",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 880,
+        "y": 1360,
+        "wires": []
+    },
+    {
+        "id": "6034f92ce2cd8a30",
+        "type": "inject",
+        "z": "701e65a3bdca6392",
+        "name": "trigger setup",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "5",
+        "topic": "",
+        "payload": "now",
+        "payloadType": "str",
+        "x": 270,
+        "y": 360,
+        "wires": [
+            [
+                "5dc6cdfbfee22642",
+                "65b755f307708c10",
+                "f9efe7b7cbab5761",
+                "66481bd935a23981",
+                "121e5cac1222883c",
+                "0ecf843397957fed"
+            ]
+        ]
+    },
+    {
+        "id": "5dc6cdfbfee22642",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set temporaryTemperatureSetpoint to 0 and echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "temporaryTemperatureSetpoint",
+                "pt": "flow",
+                "to": "50",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "temporaryTemperatureSetpoint",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 630,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "65b755f307708c10",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set launchOrder to false and echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "launchOrder",
+                "pt": "flow",
+                "to": "false",
+                "tot": "bool"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "launchOrder",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 580,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f9efe7b7cbab5761",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set heatingLaunchDate to \"\" and echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "heatingLaunchDate",
+                "pt": "flow",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "heatingLaunchDate",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 590,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b6d56549a2939206",
+        "type": "debug",
+        "z": "701e65a3bdca6392",
+        "name": "print variable values",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "620f5e90cfa957bf",
+        "type": "inject",
+        "z": "701e65a3bdca6392",
+        "name": "trigger reset",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "3",
+        "topic": "reset",
+        "payload": "now",
+        "payloadType": "str",
+        "x": 270,
+        "y": 60,
+        "wires": [
+            [
+                "4d05d72fb7f880c5",
+                "6a60b2cf75b5f5f4",
+                "454fb237d29dbf3a",
+                "262d8c637cb3d22b",
+                "8e9e1391a4da7566"
+            ]
+        ]
+    },
+    {
+        "id": "4d05d72fb7f880c5",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set maxTemperature to 110 °C and echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "maxTemperature",
+                "pt": "flow",
+                "to": "110",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "maxTemperature",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ff26febdd3516aa1",
+        "type": "subflow:5b4baad7e4c37dfa",
+        "z": "701e65a3bdca6392",
+        "name": "get temperature measure",
+        "x": 910,
+        "y": 860,
+        "wires": [
+            [
+                "1ad4cc1286dc6ab1"
+            ]
+        ]
+    },
+    {
+        "id": "1ad4cc1286dc6ab1",
+        "type": "delay",
+        "z": "701e65a3bdca6392",
+        "name": "limit intake to every 30 secondes",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "30",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 960,
+        "y": 920,
+        "wires": [
+            [
+                "862e70cd5897ad0e",
+                "c43d555e276648bd"
+            ]
+        ]
+    },
+    {
+        "id": "8cac6fc840195d09",
+        "type": "ui_chart",
+        "z": "701e65a3bdca6392",
+        "name": "show temperature measure chart",
+        "group": "e9e91d8cdb93f5cb",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "label": "Historiques des mesures de la température",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "dd HH:mm",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "200",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 900,
+        "y": 1400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "82f28d048805c583",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set temperature measure topic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "production/hot_water/sensors/temperature_probe/temperature",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 820,
+        "wires": [
+            [
+                "ff26febdd3516aa1"
+            ]
+        ]
+    },
+    {
+        "id": "862e70cd5897ad0e",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set temperatureMeasure to payload",
+        "rules": [
+            {
+                "t": "set",
+                "p": "temperatureMeasure",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1320,
+        "y": 1000,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "243b7cc8f6f4623a",
+        "type": "trigger",
+        "z": "701e65a3bdca6392",
+        "name": "pulse every 1 min",
+        "op1": "true",
+        "op2": "0",
+        "op1type": "bool",
+        "op2type": "str",
+        "duration": "-1",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "min",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 530,
+        "y": 1200,
+        "wires": [
+            [
+                "de81dac75633ba84"
+            ]
+        ]
+    },
+    {
+        "id": "03aa57d9f78410af",
+        "type": "rbe",
+        "z": "701e65a3bdca6392",
+        "name": "report by exception",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 570,
+        "y": 1320,
+        "wires": [
+            [
+                "764e7dddffad2a79",
+                "8cac6fc840195d09",
+                "b2665a1557c56b6c"
+            ]
+        ]
+    },
+    {
+        "id": "1f8c62d9bc216234",
+        "type": "trigger",
+        "z": "701e65a3bdca6392",
+        "name": "pulse every 500 ms",
+        "op1": "true",
+        "op2": "0",
+        "op1type": "bool",
+        "op2type": "flow",
+        "duration": "-5",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "s",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 530,
+        "y": 1520,
+        "wires": [
+            [
+                "92b485c463a88836"
+            ]
+        ]
+    },
+    {
+        "id": "a41e3a395604e476",
+        "type": "rbe",
+        "z": "701e65a3bdca6392",
+        "name": "report by exception",
+        "func": "rbei",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload",
+        "topi": "topic",
+        "x": 570,
+        "y": 1640,
+        "wires": [
+            [
+                "3073ec0540d03564"
+            ]
+        ]
+    },
+    {
+        "id": "4f12b22322e163cb",
+        "type": "subflow:077885e984bf01d2",
+        "z": "701e65a3bdca6392",
+        "name": "send resistors command",
+        "x": 1190,
+        "y": 1880,
+        "wires": []
+    },
+    {
+        "id": "3073ec0540d03564",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set resistors command topic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "production/hot_water/actuators/resistors/state",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 620,
+        "y": 1700,
+        "wires": [
+            [
+                "23e8101cfc5b9e56"
+            ]
+        ]
+    },
+    {
+        "id": "747678a89ad1082b",
+        "type": "debug",
+        "z": "701e65a3bdca6392",
+        "name": "print resistors command msg",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1200,
+        "y": 2020,
+        "wires": []
+    },
+    {
+        "id": "75c94fe8175e92cd",
+        "type": "complete",
+        "z": "701e65a3bdca6392",
+        "name": "",
+        "scope": [
+            "5dc6cdfbfee22642",
+            "65b755f307708c10",
+            "f9efe7b7cbab5761",
+            "121e5cac1222883c",
+            "0ecf843397957fed",
+            "66481bd935a23981"
+        ],
+        "uncaught": false,
+        "x": 270,
+        "y": 700,
+        "wires": [
+            [
+                "1f8c62d9bc216234",
+                "243b7cc8f6f4623a",
+                "82f28d048805c583",
+                "b6d56549a2939206",
+                "ba3c4e7969aa8a6d",
+                "3bf776b1f7a281d9",
+                "0b81513d9eee3a3a"
+            ]
+        ]
+    },
+    {
+        "id": "96c8c91d1444f459",
+        "type": "comment",
+        "z": "701e65a3bdca6392",
+        "name": "quand le setup est terminé",
+        "info": "",
+        "x": 310,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "de81dac75633ba84",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "get temperatureMeasure",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "temperatureMeasure",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 1260,
+        "wires": [
+            [
+                "03aa57d9f78410af"
+            ]
+        ]
+    },
+    {
+        "id": "92b485c463a88836",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "get resistorsCommand",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "resistorsCommand",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 560,
+        "y": 1580,
+        "wires": [
+            [
+                "a41e3a395604e476"
+            ]
+        ]
+    },
+    {
+        "id": "711490e7d0d05a33",
+        "type": "mqtt out",
+        "z": "701e65a3bdca6392",
+        "g": "50040848af2f0e86",
+        "name": "",
+        "topic": "production/hot_water/sensors/temperature_probe/temperature",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "26adf08477fcdae1",
+        "x": 1630,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "1ba51d0bf4eccd66",
+        "type": "inject",
+        "z": "701e65a3bdca6392",
+        "g": "50040848af2f0e86",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "21",
+        "payloadType": "num",
+        "x": 1250,
+        "y": 860,
+        "wires": [
+            [
+                "711490e7d0d05a33"
+            ]
+        ]
+    },
+    {
+        "id": "a04ae5e06c1310d3",
+        "type": "debug",
+        "z": "701e65a3bdca6392",
+        "name": "print MQTT resistors state",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1630,
+        "y": 1820,
+        "wires": []
+    },
+    {
+        "id": "1fc99e46885e957f",
+        "type": "mqtt in",
+        "z": "701e65a3bdca6392",
+        "name": "",
+        "topic": "production/hot_water/actuators/resistors/state",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "26adf08477fcdae1",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 1260,
+        "y": 1820,
+        "wires": [
+            [
+                "a04ae5e06c1310d3"
+            ]
+        ]
+    },
+    {
+        "id": "521fce933e4dd667",
+        "type": "switch",
+        "z": "701e65a3bdca6392",
+        "name": "if stopHeating is false",
+        "property": "stopHeating",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 640,
+        "y": 1820,
+        "wires": [
+            [
+                "2c67c836325cd159"
+            ]
+        ]
+    },
+    {
+        "id": "be6344650e8e5f05",
+        "type": "link in",
+        "z": "701e65a3bdca6392",
+        "name": "configure broker in",
+        "links": [
+            "bba9e4ed14f49444"
+        ],
+        "x": 685,
+        "y": 860,
+        "wires": [
+            [
+                "ff26febdd3516aa1"
+            ]
+        ]
+    },
+    {
+        "id": "bba9e4ed14f49444",
+        "type": "link out",
+        "z": "701e65a3bdca6392",
+        "name": "configure broker out",
+        "mode": "link",
+        "links": [
+            "be6344650e8e5f05",
+            "8b4b32fe85f75a3a",
+            "e76d47008d61271a"
+        ],
+        "x": 1815,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "dabfc49d11196586",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set broker configuration",
+        "rules": [
+            {
+                "t": "set",
+                "p": "broker",
+                "pt": "msg",
+                "to": "{\"protocolVersion\":5,\"birth\":{\"topic\":\"node-red/hot_water/birth\",\"qos\":2,\"retain\":false,\"payload\":\"birth hot water\"},\"close\":{\"topic\":\"node-red/hot_water/close\",\"qos\":2,\"retain\":false,\"payload\":\"close hot water\"},\"will\":{\"topic\":\"node-red/hot_water/will\",\"qos\":2,\"retain\":false,\"payload\":\"will hot water\"}}",
+                "tot": "json"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1630,
+        "y": 380,
+        "wires": [
+            [
+                "6fed0bff374c68d0"
+            ]
+        ]
+    },
+    {
+        "id": "6fed0bff374c68d0",
+        "type": "credentials",
+        "z": "701e65a3bdca6392",
+        "name": "add credentials",
+        "props": [
+            {
+                "value": "broker.broker",
+                "type": "msg"
+            },
+            {
+                "value": "broker.port",
+                "type": "msg"
+            },
+            {
+                "value": "broker.username",
+                "type": "msg"
+            },
+            {
+                "value": "broker.password",
+                "type": "msg"
+            }
+        ],
+        "x": 1620,
+        "y": 440,
+        "wires": [
+            [
+                "bba9e4ed14f49444",
+                "95839080620b567a"
+            ]
+        ]
+    },
+    {
+        "id": "8b4b32fe85f75a3a",
+        "type": "link in",
+        "z": "701e65a3bdca6392",
+        "name": "configure broker in",
+        "links": [
+            "bba9e4ed14f49444"
+        ],
+        "x": 965,
+        "y": 1840,
+        "wires": [
+            [
+                "4f12b22322e163cb"
+            ]
+        ]
+    },
+    {
+        "id": "95839080620b567a",
+        "type": "debug",
+        "z": "701e65a3bdca6392",
+        "name": "print msg.broker",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "broker",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1880,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "ea57d427c10e0cd8",
+        "type": "inject",
+        "z": "701e65a3bdca6392",
+        "g": "1ea7e85362bc350d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 960,
+        "y": 1620,
+        "wires": [
+            [
+                "c331a6ed5cc80151"
+            ]
+        ]
+    },
+    {
+        "id": "1827385b18661559",
+        "type": "inject",
+        "z": "701e65a3bdca6392",
+        "g": "1ea7e85362bc350d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 960,
+        "y": 1660,
+        "wires": [
+            [
+                "f947ce662a41807a"
+            ]
+        ]
+    },
+    {
+        "id": "c331a6ed5cc80151",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "g": "1ea7e85362bc350d",
+        "name": "set flow.resistorsCommand to \"ON\"",
+        "rules": [
+            {
+                "t": "set",
+                "p": "resistorsCommand",
+                "pt": "flow",
+                "to": "ON",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1230,
+        "y": 1620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f947ce662a41807a",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "g": "1ea7e85362bc350d",
+        "name": "set flow.resistorsCommand to \"OFF\"",
+        "rules": [
+            {
+                "t": "set",
+                "p": "resistorsCommand",
+                "pt": "flow",
+                "to": "OFF",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1230,
+        "y": 1660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b2021661963c6b29",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "g": "1ea7e85362bc350d",
+        "name": "set flow.stopHeating to false",
+        "rules": [
+            {
+                "t": "set",
+                "p": "stopHeating",
+                "pt": "flow",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1200,
+        "y": 1580,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "51bbe6fecc9071c5",
+        "type": "inject",
+        "z": "701e65a3bdca6392",
+        "g": "1ea7e85362bc350d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 960,
+        "y": 1580,
+        "wires": [
+            [
+                "b2021661963c6b29"
+            ]
+        ]
+    },
+    {
+        "id": "46af5a68593e83e1",
+        "type": "inject",
+        "z": "701e65a3bdca6392",
+        "name": "trigger mqtt connection",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "10",
+        "topic": "",
+        "payload": "now",
+        "payloadType": "str",
+        "x": 1320,
+        "y": 340,
+        "wires": [
+            [
+                "dabfc49d11196586"
+            ]
+        ]
+    },
+    {
+        "id": "4511ef9e2ccb9f11",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "get temperatureSetpoint",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "temperatureSetpoint",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 830,
+        "y": 2140,
+        "wires": [
+            [
+                "fdf01ffce15fdb7e"
+            ]
+        ]
+    },
+    {
+        "id": "fdf01ffce15fdb7e",
+        "type": "rbe",
+        "z": "701e65a3bdca6392",
+        "name": "report by exception",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload",
+        "topi": "topic",
+        "x": 830,
+        "y": 2200,
+        "wires": [
+            [
+                "54046f346e7e25e4"
+            ]
+        ]
+    },
+    {
+        "id": "ba3c4e7969aa8a6d",
+        "type": "trigger",
+        "z": "701e65a3bdca6392",
+        "name": "pulse every 100 ms",
+        "op1": "true",
+        "op2": "0",
+        "op1type": "bool",
+        "op2type": "flow",
+        "duration": "-100",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "ms",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 530,
+        "y": 2100,
+        "wires": [
+            [
+                "4511ef9e2ccb9f11",
+                "5860747a2bd40b45",
+                "5e4ed9fd2a585e40",
+                "a9598aef4e5a6329",
+                "b2ac844bc907c052",
+                "6da45312e7b2d8b2"
+            ]
+        ]
+    },
+    {
+        "id": "2a90ace97629b74a",
+        "type": "comment",
+        "z": "701e65a3bdca6392",
+        "name": "ui refresh",
+        "info": "",
+        "x": 500,
+        "y": 2060,
+        "wires": []
+    },
+    {
+        "id": "ba6bebf087982727",
+        "type": "comment",
+        "z": "701e65a3bdca6392",
+        "name": "resistors command publication",
+        "info": "",
+        "x": 570,
+        "y": 1480,
+        "wires": []
+    },
+    {
+        "id": "52296921708cd53c",
+        "type": "comment",
+        "z": "701e65a3bdca6392",
+        "name": "resistors command computation",
+        "info": "",
+        "x": 570,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "c3c6e4d863f9525c",
+        "type": "comment",
+        "z": "701e65a3bdca6392",
+        "name": "temperature measure acquisition",
+        "info": "",
+        "x": 930,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "202bb4e4061344fa",
+        "type": "ui_text",
+        "z": "701e65a3bdca6392",
+        "group": "2eebd9cb26906496",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "show resistors command",
+        "label": "Dernière commande envoyée :",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 1190,
+        "y": 1980,
+        "wires": []
+    },
+    {
+        "id": "66481bd935a23981",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set resistorsCommand to \"OFF\" and echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "resistorsCommand",
+                "pt": "flow",
+                "to": "OFF",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "resistorsCommand",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 520,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7078db128b4df915",
+        "type": "ui_text_input",
+        "z": "701e65a3bdca6392",
+        "name": "set launch date",
+        "label": "Date du besoin en eau",
+        "tooltip": "",
+        "group": "1b8fdeec32c609c1",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "passthru": true,
+        "mode": "datetime-local",
+        "delay": "100",
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 320,
+        "y": 3440,
+        "wires": [
+            [
+                "6a9e084b57636def"
+            ]
+        ]
+    },
+    {
+        "id": "f62522c2917c02a7",
+        "type": "ui_text_input",
+        "z": "701e65a3bdca6392",
+        "name": "set temperature setpoint",
+        "label": "Température souhaitée",
+        "tooltip": "",
+        "group": "1b8fdeec32c609c1",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "number",
+        "delay": "100",
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 350,
+        "y": 3560,
+        "wires": [
+            [
+                "a35d873e4fc0e4c0"
+            ]
+        ]
+    },
+    {
+        "id": "9290a6ac4cc85e42",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "update temporaryTemperatureSetpoint",
+        "rules": [
+            {
+                "t": "set",
+                "p": "temporaryTemperatureSetpoint",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1350,
+        "y": 3800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6a9e084b57636def",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "update temporaryLaunchDate",
+        "rules": [
+            {
+                "t": "set",
+                "p": "temporaryHeatingLaunchDate",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 390,
+        "y": 3500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a35d873e4fc0e4c0",
+        "type": "switch",
+        "z": "701e65a3bdca6392",
+        "name": "if it exceeds maxTemperature",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gte",
+                "v": "maxTemperature",
+                "vt": "flow"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 690,
+        "y": 3600,
+        "wires": [
+            [
+                "22a602d68c599847",
+                "24ac8803962510b0"
+            ],
+            [
+                "9290a6ac4cc85e42"
+            ]
+        ]
+    },
+    {
+        "id": "22a602d68c599847",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set to maxTemperature",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "maxTemperature",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1010,
+        "y": 3520,
+        "wires": [
+            [
+                "9290a6ac4cc85e42",
+                "f62522c2917c02a7"
+            ]
+        ]
+    },
+    {
+        "id": "930965ed6bbd12b3",
+        "type": "status",
+        "z": "701e65a3bdca6392",
+        "name": "watch mqtt nodes status",
+        "scope": [
+            "ff26febdd3516aa1",
+            "4f12b22322e163cb",
+            "15fe52e3e95a60d4"
+        ],
+        "x": 1030,
+        "y": 460,
+        "wires": [
+            [
+                "c17351c57a26ddb7"
+            ]
+        ]
+    },
+    {
+        "id": "c17351c57a26ddb7",
+        "type": "trigger",
+        "z": "701e65a3bdca6392",
+        "name": "timeout 5 seconds",
+        "op1": "",
+        "op2": "",
+        "op1type": "pay",
+        "op2type": "payl",
+        "duration": "5",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "s",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 1030,
+        "y": 520,
+        "wires": [
+            [
+                "cea0f74ada58bc46"
+            ]
+        ]
+    },
+    {
+        "id": "9fc92cea89d3da84",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set stopHeating to true",
+        "rules": [
+            {
+                "t": "set",
+                "p": "stopHeating",
+                "pt": "flow",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1630,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "50cb3c37c8f87b9f",
+        "type": "debug",
+        "z": "701e65a3bdca6392",
+        "name": "print connection state",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "status.text",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1620,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "cea0f74ada58bc46",
+        "type": "switch",
+        "z": "701e65a3bdca6392",
+        "name": "compare status.text to \"node-red:common.status.connected\"",
+        "property": "status.text",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "node-red:common.status.connected",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1190,
+        "y": 580,
+        "wires": [
+            [
+                "dabfc49d11196586",
+                "50cb3c37c8f87b9f",
+                "9fc92cea89d3da84",
+                "0de3fa48e13236d4"
+            ],
+            [
+                "a219bbc2e5916348",
+                "50cb3c37c8f87b9f"
+            ]
+        ]
+    },
+    {
+        "id": "58b775d546651ad7",
+        "type": "comment",
+        "z": "701e65a3bdca6392",
+        "name": "bon tout ça c'est très mignon mais si mqtt est down \\n l'ordre d'arrêt sera jamais transmis donc faut ajouter un safeguard coté \\n esp32 qui coupe la chauffe en cas de déconnexion",
+        "info": "",
+        "x": 1170,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "691739f004438b9a",
+        "type": "comment",
+        "z": "701e65a3bdca6392",
+        "g": "1ea7e85362bc350d",
+        "name": "test mqtt resistors",
+        "info": "",
+        "x": 970,
+        "y": 1540,
+        "wires": []
+    },
+    {
+        "id": "a219bbc2e5916348",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set stopHeating to false and echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "stopHeating",
+                "pt": "flow",
+                "to": "false",
+                "tot": "bool"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "stopHeating",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1660,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dad7eae1214cec94",
+        "type": "rbe",
+        "z": "701e65a3bdca6392",
+        "name": "report by exception",
+        "func": "rbei",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 1650,
+        "y": 220,
+        "wires": [
+            [
+                "26c16768ff8654ca"
+            ]
+        ]
+    },
+    {
+        "id": "26c16768ff8654ca",
+        "type": "ui_toast",
+        "z": "701e65a3bdca6392",
+        "position": "top right",
+        "displayTime": "5",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "",
+        "x": 1670,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "0de3fa48e13236d4",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "status.text",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1600,
+        "y": 160,
+        "wires": [
+            [
+                "dad7eae1214cec94"
+            ]
+        ]
+    },
+    {
+        "id": "5860747a2bd40b45",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "get heatingLaunchDate timestamp",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "heatingLaunchDate",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 860,
+        "y": 2320,
+        "wires": [
+            [
+                "fe2bcbc0ac69e97d"
+            ]
+        ]
+    },
+    {
+        "id": "fe2bcbc0ac69e97d",
+        "type": "rbe",
+        "z": "701e65a3bdca6392",
+        "name": "report by exception",
+        "func": "rbei",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload",
+        "topi": "topic",
+        "x": 830,
+        "y": 2380,
+        "wires": [
+            [
+                "81b091e45a1d69af"
+            ]
+        ]
+    },
+    {
+        "id": "59c70fb96228ca19",
+        "type": "ui_text",
+        "z": "701e65a3bdca6392",
+        "group": "2017d15efc1139f6",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "show end date command",
+        "label": "Date de fin de chauffe :",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 890,
+        "y": 2500,
+        "wires": []
+    },
+    {
+        "id": "81b091e45a1d69af",
+        "type": "function",
+        "z": "701e65a3bdca6392",
+        "name": "format timestamp",
+        "func": "let selectedDate = new Date(msg.payload); // msg.payload doit venir du date_picker\nlet day = selectedDate.getDate().toString().padStart(2, '0');\nlet month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');\nlet year = selectedDate.getFullYear();\nlet hours = selectedDate.getHours().toString().padStart(2, '0');\nlet minutes = selectedDate.getMinutes().toString().padStart(2, '0');\n\nmsg.payload = `${day}/${month}/${year} ${hours}:${minutes}`;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 2440,
+        "wires": [
+            [
+                "59c70fb96228ca19"
+            ]
+        ]
+    },
+    {
+        "id": "54046f346e7e25e4",
+        "type": "ui_text",
+        "z": "701e65a3bdca6392",
+        "group": "2017d15efc1139f6",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "name": "show launch date command",
+        "label": "Température (°C) :",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 880,
+        "y": 2260,
+        "wires": []
+    },
+    {
+        "id": "646da957f55992f4",
+        "type": "ui_toast",
+        "z": "701e65a3bdca6392",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "",
+        "x": 1050,
+        "y": 3680,
+        "wires": []
+    },
+    {
+        "id": "24ac8803962510b0",
+        "type": "trigger",
+        "z": "701e65a3bdca6392",
+        "name": "timeout 30 secondes",
+        "op1": "",
+        "op2": "",
+        "op1type": "pay",
+        "op2type": "payl",
+        "duration": "30",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "s",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 1000,
+        "y": 3580,
+        "wires": [
+            [
+                "4facd26fc005b5a1"
+            ]
+        ]
+    },
+    {
+        "id": "4facd26fc005b5a1",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set payload",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Can't exceed maximum temperature setpoint !",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1010,
+        "y": 3640,
+        "wires": [
+            [
+                "646da957f55992f4"
+            ]
+        ]
+    },
+    {
+        "id": "80022f41195121f8",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "if launchOrder is true",
+        "rules": [
+            {
+                "t": "set",
+                "p": "launchOrder",
+                "pt": "flow",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 720,
+        "y": 1940,
+        "wires": [
+            [
+                "c5324eade59a32a9",
+                "202bb4e4061344fa",
+                "747678a89ad1082b",
+                "4f12b22322e163cb"
+            ]
+        ]
+    },
+    {
+        "id": "3bf776b1f7a281d9",
+        "type": "trigger",
+        "z": "701e65a3bdca6392",
+        "name": "pulse every 1 s",
+        "op1": "true",
+        "op2": "0",
+        "op1type": "bool",
+        "op2type": "flow",
+        "duration": "-1",
+        "extend": false,
+        "overrideDelay": false,
+        "units": "s",
+        "reset": "",
+        "bytopic": "all",
+        "topic": "topic",
+        "outputs": 1,
+        "x": 520,
+        "y": 3160,
+        "wires": [
+            [
+                "4a7ca8e1f8dd1a7d"
+            ]
+        ]
+    },
+    {
+        "id": "4619ed84cc831074",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "get current timestamp and echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "currentDate",
+                "pt": "flow",
+                "to": "",
+                "tot": "date"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "currentDate",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 610,
+        "y": 3280,
+        "wires": [
+            [
+                "61030c416fcae545",
+                "47236d841469d226"
+            ]
+        ]
+    },
+    {
+        "id": "61030c416fcae545",
+        "type": "switch",
+        "z": "701e65a3bdca6392",
+        "name": "compare to real launch date",
+        "property": "realLaunchDate",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "flow"
+            },
+            {
+                "t": "gte",
+                "v": "currentDate",
+                "vt": "flow"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 3,
+        "x": 960,
+        "y": 3320,
+        "wires": [
+            [
+                "aeade7faccefa049"
+            ],
+            [
+                "aeade7faccefa049"
+            ],
+            [
+                "476fa3dc79b09c0a"
+            ]
+        ]
+    },
+    {
+        "id": "47236d841469d226",
+        "type": "function",
+        "z": "701e65a3bdca6392",
+        "name": "format timestamp",
+        "func": "let selectedDate = new Date(msg.payload); // msg.payload doit venir du date_picker\nlet day = selectedDate.getDate().toString().padStart(2, '0');\nlet month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');\nlet year = selectedDate.getFullYear();\nlet hours = selectedDate.getHours().toString().padStart(2, '0');\nlet minutes = selectedDate.getMinutes().toString().padStart(2, '0');\n\nmsg.payload = `${day}/${month}/${year} ${hours}:${minutes}`;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 930,
+        "y": 3380,
+        "wires": [
+            [
+                "b0a6a11829205db9"
+            ]
+        ]
+    },
+    {
+        "id": "b0a6a11829205db9",
+        "type": "ui_text",
+        "z": "701e65a3bdca6392",
+        "group": "2017d15efc1139f6",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "show current date",
+        "label": "Date actuelle :",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 950,
+        "y": 3440,
+        "wires": []
+    },
+    {
+        "id": "5e4ed9fd2a585e40",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "get launchOrder",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "launchOrder",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 820,
+        "y": 2820,
+        "wires": [
+            [
+                "59552e25982b87ab"
+            ]
+        ]
+    },
+    {
+        "id": "59552e25982b87ab",
+        "type": "rbe",
+        "z": "701e65a3bdca6392",
+        "name": "report by exception",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload",
+        "topi": "topic",
+        "x": 850,
+        "y": 2880,
+        "wires": [
+            [
+                "dee9448d7460a360"
+            ]
+        ]
+    },
+    {
+        "id": "c5324eade59a32a9",
+        "type": "ui_led",
+        "z": "701e65a3bdca6392",
+        "order": 1,
+        "group": "2eebd9cb26906496",
+        "width": 0,
+        "height": 0,
+        "label": "Témoin d'état de la chauffe :",
+        "labelPlacement": "left",
+        "labelAlignment": "left",
+        "colorForValue": [
+            {
+                "color": "#ff0000",
+                "value": "OFF",
+                "valueType": "str"
+            },
+            {
+                "color": "#008000",
+                "value": "ON",
+                "valueType": "str"
+            }
+        ],
+        "allowColorForValueInMessage": false,
+        "shape": "square",
+        "showGlow": true,
+        "name": "show heating indicator",
+        "x": 1180,
+        "y": 1940,
+        "wires": []
+    },
+    {
+        "id": "476fa3dc79b09c0a",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set launch order to true",
+        "rules": [
+            {
+                "t": "set",
+                "p": "launchOrder",
+                "pt": "flow",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1270,
+        "y": 3340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "aeade7faccefa049",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set launch order to false",
+        "rules": [
+            {
+                "t": "set",
+                "p": "launchOrder",
+                "pt": "flow",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1270,
+        "y": 3300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "121e5cac1222883c",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set heatingLaunchDate to 0 and echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "heatingLaunchDate",
+                "pt": "flow",
+                "to": "0",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "heatingLaunchDate",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 590,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4a7ca8e1f8dd1a7d",
+        "type": "switch",
+        "z": "701e65a3bdca6392",
+        "name": "if bypassLaunchDate is false",
+        "property": "bypassLaunchDate",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "false"
+            },
+            {
+                "t": "true"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 580,
+        "y": 3220,
+        "wires": [
+            [
+                "4619ed84cc831074"
+            ],
+            [
+                "476fa3dc79b09c0a"
+            ]
+        ]
+    },
+    {
+        "id": "0ecf843397957fed",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set bypassLaunchDate to false and echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "bypassLaunchDate",
+                "pt": "flow",
+                "to": "false",
+                "tot": "bool"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "bypassLaunchDate",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 600,
+        "wires": [
+            [
+                "0667fab5746db7f1"
+            ]
+        ]
+    },
+    {
+        "id": "a9598aef4e5a6329",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "get bypassLaunchDate",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "bypassLaunchDate",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 850,
+        "y": 3000,
+        "wires": [
+            [
+                "bbee673d4a9a2f5c"
+            ]
+        ]
+    },
+    {
+        "id": "bbee673d4a9a2f5c",
+        "type": "rbe",
+        "z": "701e65a3bdca6392",
+        "name": "report by exception",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload",
+        "topi": "topic",
+        "x": 850,
+        "y": 3060,
+        "wires": [
+            [
+                "07abb6b267845b7f"
+            ]
+        ]
+    },
+    {
+        "id": "69190d688f36183f",
+        "type": "ui_text",
+        "z": "701e65a3bdca6392",
+        "group": "2017d15efc1139f6",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "name": "show heating mode",
+        "label": "Mode de marche :",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 1510,
+        "y": 3120,
+        "wires": []
+    },
+    {
+        "id": "0667fab5746db7f1",
+        "type": "link out",
+        "z": "701e65a3bdca6392",
+        "name": "set enforceHeating out",
+        "mode": "link",
+        "links": [
+            "bd98a1f2fb9162fe"
+        ],
+        "x": 815,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "bd98a1f2fb9162fe",
+        "type": "link in",
+        "z": "701e65a3bdca6392",
+        "name": "set enforceHeating in",
+        "links": [
+            "0667fab5746db7f1"
+        ],
+        "x": 225,
+        "y": 3680,
+        "wires": [
+            [
+                "2c1ddeceb7bca2c7"
+            ]
+        ]
+    },
+    {
+        "id": "2c67c836325cd159",
+        "type": "switch",
+        "z": "701e65a3bdca6392",
+        "name": "if bypassLaunchDate is true",
+        "property": "bypassLaunchDate",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 700,
+        "y": 1880,
+        "wires": [
+            [
+                "4f12b22322e163cb",
+                "c5324eade59a32a9",
+                "202bb4e4061344fa",
+                "747678a89ad1082b"
+            ],
+            [
+                "80022f41195121f8"
+            ]
+        ]
+    },
+    {
+        "id": "e4e262a986889fe3",
+        "type": "ui_text",
+        "z": "701e65a3bdca6392",
+        "group": "2017d15efc1139f6",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "name": "show launch order",
+        "label": "Ordre de chauffe :",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 1510,
+        "y": 2940,
+        "wires": []
+    },
+    {
+        "id": "07abb6b267845b7f",
+        "type": "switch",
+        "z": "701e65a3bdca6392",
+        "name": "compare to true",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 860,
+        "y": 3120,
+        "wires": [
+            [
+                "ce2bf810932e0f9d"
+            ],
+            [
+                "2af84e070d1aa791"
+            ]
+        ]
+    },
+    {
+        "id": "ce2bf810932e0f9d",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set payload to \"Forcé\"",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Forcé",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1140,
+        "y": 3100,
+        "wires": [
+            [
+                "69190d688f36183f"
+            ]
+        ]
+    },
+    {
+        "id": "2af84e070d1aa791",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set payload to \"Programmé\"",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Programmé",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1160,
+        "y": 3140,
+        "wires": [
+            [
+                "69190d688f36183f"
+            ]
+        ]
+    },
+    {
+        "id": "dee9448d7460a360",
+        "type": "switch",
+        "z": "701e65a3bdca6392",
+        "name": "compare to true",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 860,
+        "y": 2940,
+        "wires": [
+            [
+                "083a9bb7e3e3d1e6"
+            ],
+            [
+                "e5bb51ae486ceb60"
+            ]
+        ]
+    },
+    {
+        "id": "083a9bb7e3e3d1e6",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set payload to \"Lancer la chauffe\"",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Lancer la chauffe",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1180,
+        "y": 2920,
+        "wires": [
+            [
+                "e4e262a986889fe3"
+            ]
+        ]
+    },
+    {
+        "id": "e5bb51ae486ceb60",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set payload to \"Arrêter la chauffe\"",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Arrêter la chauffe",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1180,
+        "y": 2960,
+        "wires": [
+            [
+                "e4e262a986889fe3"
+            ]
+        ]
+    },
+    {
+        "id": "6a60b2cf75b5f5f4",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "d": true,
+        "name": "set resistorUnitPower to 100 W and echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "resistorUnitPower",
+                "pt": "flow",
+                "to": "100",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "resistorUnitPower",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8c5927a0d8f0ed3f",
+        "type": "inject",
+        "z": "701e65a3bdca6392",
+        "name": "press if subscriptions failed",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 220,
+        "y": 920,
+        "wires": [
+            [
+                "82f28d048805c583",
+                "0b81513d9eee3a3a"
+            ]
+        ]
+    },
+    {
+        "id": "0b81513d9eee3a3a",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set temperature measure topic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "production/hot_water/sensors/water_level/level",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 570,
+        "y": 1020,
+        "wires": [
+            [
+                "15fe52e3e95a60d4"
+            ]
+        ]
+    },
+    {
+        "id": "e76d47008d61271a",
+        "type": "link in",
+        "z": "701e65a3bdca6392",
+        "name": "configure broker in",
+        "links": [
+            "bba9e4ed14f49444"
+        ],
+        "x": 685,
+        "y": 1060,
+        "wires": [
+            [
+                "15fe52e3e95a60d4"
+            ]
+        ]
+    },
+    {
+        "id": "15fe52e3e95a60d4",
+        "type": "subflow:5b4baad7e4c37dfa",
+        "z": "701e65a3bdca6392",
+        "name": "get water level",
+        "x": 880,
+        "y": 1060,
+        "wires": [
+            [
+                "b9ac80cf62a14b48"
+            ]
+        ]
+    },
+    {
+        "id": "6a54888ac5f52057",
+        "type": "comment",
+        "z": "701e65a3bdca6392",
+        "name": "water level acquisition",
+        "info": "",
+        "x": 900,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "b9ac80cf62a14b48",
+        "type": "delay",
+        "z": "701e65a3bdca6392",
+        "name": "limit intake to every 10 secondes",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "10",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 960,
+        "y": 1120,
+        "wires": [
+            [
+                "4b2a74321291c264",
+                "925e41d089eb213a"
+            ]
+        ]
+    },
+    {
+        "id": "925e41d089eb213a",
+        "type": "debug",
+        "z": "701e65a3bdca6392",
+        "name": "print water level",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1260,
+        "y": 1160,
+        "wires": []
+    },
+    {
+        "id": "4b2a74321291c264",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set waterLevel to payload",
+        "rules": [
+            {
+                "t": "set",
+                "p": "waterLevel",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1290,
+        "y": 1200,
+        "wires": [
+            [
+                "47ca91f66f81114c"
+            ]
+        ]
+    },
+    {
+        "id": "454fb237d29dbf3a",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set maxWaterLevel to 1800 L and echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "maxWaterLevel",
+                "pt": "flow",
+                "to": "1800",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "maxWaterLevel",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 600,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b3911cd3f8568487",
+        "type": "mqtt out",
+        "z": "701e65a3bdca6392",
+        "name": "",
+        "topic": "production/hot_water/sensors/water_level/level",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "26adf08477fcdae1",
+        "x": 1560,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "4d571fbf35e84ee7",
+        "type": "inject",
+        "z": "701e65a3bdca6392",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1100",
+        "payloadType": "num",
+        "x": 1230,
+        "y": 1100,
+        "wires": [
+            [
+                "b3911cd3f8568487"
+            ]
+        ]
+    },
+    {
+        "id": "68493d84e32a1b46",
+        "type": "comment",
+        "z": "701e65a3bdca6392",
+        "name": "launch order computation",
+        "info": "",
+        "x": 550,
+        "y": 3120,
+        "wires": []
+    },
+    {
+        "id": "23e8101cfc5b9e56",
+        "type": "switch",
+        "z": "701e65a3bdca6392",
+        "name": "if waterLevel is below maxWaterLevel",
+        "property": "waterLevel",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "lte",
+                "v": "maxWaterLevel",
+                "vt": "flow"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 670,
+        "y": 1760,
+        "wires": [
+            [
+                "521fce933e4dd667"
+            ]
+        ]
+    },
+    {
+        "id": "a4ebfd0aa74526c8",
+        "type": "function",
+        "z": "701e65a3bdca6392",
+        "name": "convert into real launch date",
+        "func": "// Récupération des paramètres depuis le contexte du flow\nconst volume = flow.get(\"waterLevel\"); // en litres\nconst tempInitiale = flow.get(\"temperatureMeasure\");\nconst tempFinale = flow.get(\"temperatureSetpoint\");\nconst heureFinStr = flow.get(\"heatingLaunchDate\"); // timestamp\nconst rendement = flow.get(\"resistorsPowerEfficiency\") ?? 1.0;\n\n// Vérification des paramètres\nlet erreurs = [];\nif (volume == null) erreurs.push(\"waterLevel\");\nif (tempInitiale == null) erreurs.push(\"temperatureMeasure\");\nif (tempFinale == null) erreurs.push(\"temperatureSetpoint\");\nif (!heureFinStr) erreurs.push(\"heatingLaunchDate\");\n\nif (erreurs.length > 0) {\n    node.error(\"Paramètres manquants dans le flow : \" + erreurs.join(\", \"));\n    return null;\n}\n\n// Constantes physiques\nconst c = 4.18; // J/g/K\nconst nbResistances = 6;\nconst puissanceParResistanceKW = 15 / Math.sqrt(3); // ≈ 8.66 kW\nconst puissanceTotaleW = nbResistances * puissanceParResistanceKW * 1000;\nconst puissanceUtileW = puissanceTotaleW * rendement;\n\n// Masse d'eau\nconst masse = volume * 1000; // grammes\nconst deltaT = tempFinale - tempInitiale;\n\n// Vérification : tempFinale doit être > tempInitiale\nif (deltaT <= 0) {\n    node.error(`La température finale (${tempFinale}°C) doit être supérieure à la température initiale (${tempInitiale}°C).`);\n    return null;\n}\n\n// Énergie à fournir (Joules)\nconst energie = masse * c * deltaT;\n\n// Durée nécessaire (secondes)\nconst tempsSecondes = energie / puissanceUtileW;\n\n// Heure de début\nconst dateFin = new Date(heureFinStr);\nconst dateDebut = new Date(dateFin.getTime() - tempsSecondes * 1000);\n\n// Résultat\nmsg.payload = {\n    heureDebut: dateDebut.toISOString(),\n    heureDebutTimestamp: dateDebut.getTime(),\n    dureeSecondes: tempsSecondes,\n    energieJoules: energie,\n    puissanceTotaleW,\n    puissanceUtileW,\n    rendement\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 720,
+        "y": 4020,
+        "wires": [
+            [
+                "b8553a475d30cab6",
+                "6911ac833c07670c"
+            ]
+        ]
+    },
+    {
+        "id": "beb165f97916a983",
+        "type": "comment",
+        "z": "701e65a3bdca6392",
+        "name": "ajouter remplissage auto en fonction de la commande générale \\n (plutôt que commande en fonction du niveau tel qu'il est déjà dans la cuve)",
+        "info": "",
+        "x": 700,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "47ca91f66f81114c",
+        "type": "switch",
+        "z": "701e65a3bdca6392",
+        "name": "if waterLevel is below minWaterLevel",
+        "property": "waterLevel",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "lte",
+                "v": "minWaterLevel",
+                "vt": "flow"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 1350,
+        "y": 1260,
+        "wires": [
+            [
+                "cd5e658742b1be78"
+            ]
+        ]
+    },
+    {
+        "id": "262d8c637cb3d22b",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set minWaterLevel to 550 L and echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "minWaterLevel",
+                "pt": "flow",
+                "to": "550",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "minWaterLevel",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 590,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cd5e658742b1be78",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set stopHeating to false and echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "stopHeating",
+                "pt": "flow",
+                "to": "false",
+                "tot": "bool"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "stopHeating",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1380,
+        "y": 1320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8e9e1391a4da7566",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set resistorsPowerEfficiency 70 % and echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "resistorsPowerEfficiency",
+                "pt": "flow",
+                "to": "0.7",
+                "tot": "num"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "resistorsPowerEfficiency",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 610,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b8553a475d30cab6",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "set realLaunchDate to payload.heureDebutTimestamp and echo",
+        "rules": [
+            {
+                "t": "set",
+                "p": "realLaunchDate",
+                "pt": "flow",
+                "to": "payload.heureDebutTimestamp",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "realLaunchDate",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1170,
+        "y": 4060,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b2ac844bc907c052",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "get realLaunchDate timestamp",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "realLaunchDate",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 850,
+        "y": 2580,
+        "wires": [
+            [
+                "93c32767816d095b"
+            ]
+        ]
+    },
+    {
+        "id": "93c32767816d095b",
+        "type": "rbe",
+        "z": "701e65a3bdca6392",
+        "name": "report by exception",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload",
+        "topi": "topic",
+        "x": 850,
+        "y": 2640,
+        "wires": [
+            [
+                "c3d99ab526c62a42"
+            ]
+        ]
+    },
+    {
+        "id": "c3d99ab526c62a42",
+        "type": "function",
+        "z": "701e65a3bdca6392",
+        "name": "format timestamp",
+        "func": "let selectedDate = new Date(msg.payload); // msg.payload doit venir du date_picker\nlet day = selectedDate.getDate().toString().padStart(2, '0');\nlet month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');\nlet year = selectedDate.getFullYear();\nlet hours = selectedDate.getHours().toString().padStart(2, '0');\nlet minutes = selectedDate.getMinutes().toString().padStart(2, '0');\n\nmsg.payload = `${day}/${month}/${year} ${hours}:${minutes}`;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 870,
+        "y": 2700,
+        "wires": [
+            [
+                "96f4c09336cb9b27"
+            ]
+        ]
+    },
+    {
+        "id": "96f4c09336cb9b27",
+        "type": "ui_text",
+        "z": "701e65a3bdca6392",
+        "group": "2017d15efc1139f6",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "show launch date command",
+        "label": "Date début de chauffe :",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 920,
+        "y": 2760,
+        "wires": []
+    },
+    {
+        "id": "6911ac833c07670c",
+        "type": "debug",
+        "z": "701e65a3bdca6392",
+        "name": "print resulting payload",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1040,
+        "y": 4100,
+        "wires": []
+    },
+    {
+        "id": "5bb6369bdc411022",
+        "type": "comment",
+        "z": "701e65a3bdca6392",
+        "name": "pas forcément necessaire de scinder",
+        "info": "",
+        "x": 960,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "6da45312e7b2d8b2",
+        "type": "change",
+        "z": "701e65a3bdca6392",
+        "name": "get waterLevel",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "waterLevel",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1160,
+        "y": 2120,
+        "wires": [
+            [
+                "b16ea2947d81f4c1"
+            ]
+        ]
+    },
+    {
+        "id": "b16ea2947d81f4c1",
+        "type": "rbe",
+        "z": "701e65a3bdca6392",
+        "name": "report by exception",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": false,
+        "property": "payload",
+        "topi": "topic",
+        "x": 1190,
+        "y": 2180,
+        "wires": [
+            [
+                "2bf94a44c84ebe4a"
+            ]
+        ]
+    },
+    {
+        "id": "2bf94a44c84ebe4a",
+        "type": "ui_gauge",
+        "z": "701e65a3bdca6392",
+        "name": "show water level",
+        "group": "e9e91d8cdb93f5cb",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "wave",
+        "title": "Niveau d'eau",
+        "label": "L",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "1800",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 1210,
+        "y": 2240,
+        "wires": []
+    },
+    {
+        "id": "08186576fae87778",
+        "type": "comment",
+        "z": "701e65a3bdca6392",
+        "name": "remplacer par un call API (ou mettre en complement)",
+        "info": "",
+        "x": 430,
+        "y": 3400,
+        "wires": []
+    },
+    {
+        "id": "6eb4149d55f8b964",
+        "type": "catch",
+        "z": "701e65a3bdca6392",
+        "name": "catch conversion errors",
+        "scope": [
+            "a4ebfd0aa74526c8"
+        ],
+        "uncaught": false,
+        "x": 700,
+        "y": 4060,
+        "wires": [
+            [
+                "ce9ba9b02226caf6"
+            ]
+        ]
+    },
+    {
+        "id": "ce9ba9b02226caf6",
+        "type": "ui_toast",
+        "z": "701e65a3bdca6392",
+        "position": "top right",
+        "displayTime": "3",
+        "highlight": "",
+        "sendall": true,
+        "outputs": 0,
+        "ok": "OK",
+        "cancel": "",
+        "raw": false,
+        "className": "",
+        "topic": "",
+        "name": "",
+        "x": 1030,
+        "y": 4140,
+        "wires": []
+    },
+    {
+        "id": "2b10285d8b0b4b27",
+        "type": "comment",
+        "z": "701e65a3bdca6392",
+        "g": "50040848af2f0e86",
+        "name": "test temperature subscription",
+        "info": "",
+        "x": 1300,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "1b8fdeec32c609c1",
+        "type": "ui_group",
+        "name": "Éditer la commande",
+        "tab": "8d011d6a195649c2",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "e9e91d8cdb93f5cb",
+        "type": "ui_group",
+        "name": "Mesures",
+        "tab": "8d011d6a195649c2",
+        "order": 3,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "26adf08477fcdae1",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "10.1.14.50",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "2eebd9cb26906496",
+        "type": "ui_group",
+        "name": "Console administrateur",
+        "tab": "8d011d6a195649c2",
+        "order": 4,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "2017d15efc1139f6",
+        "type": "ui_group",
+        "name": "Commande en cours",
+        "tab": "8d011d6a195649c2",
+        "order": 2,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "8d011d6a195649c2",
+        "type": "ui_tab",
+        "name": "Hot Water",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]
