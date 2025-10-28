@@ -1,0 +1,502 @@
+[
+    {
+        "id": "5b4baad7e4c37dfa",
+        "type": "subflow",
+        "name": "advanced mqtt in",
+        "info": "msg.topic must be defined",
+        "category": "",
+        "in": [
+            {
+                "x": 560,
+                "y": 360,
+                "wires": [
+                    {
+                        "id": "0948fa42ef5e37c5"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1880,
+                "y": 700,
+                "wires": [
+                    {
+                        "id": "8d4269d094e75b68",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#F4B2FF",
+        "icon": "node-red/bridge.svg",
+        "status": {
+            "x": 860,
+            "y": 620,
+            "wires": [
+                {
+                    "id": "0aa7bfe2d8c09a09",
+                    "port": 0
+                }
+            ]
+        }
+    },
+    {
+        "id": "8d4269d094e75b68",
+        "type": "mqtt in",
+        "z": "5b4baad7e4c37dfa",
+        "name": "mqtt in",
+        "topic": "",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3d447ca3b22c0814",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 1,
+        "x": 1710,
+        "y": 640,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b8b0147b55b30a10",
+        "type": "debug",
+        "z": "5b4baad7e4c37dfa",
+        "name": "print subscribe topic",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "topic",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1380,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "44388310749cdc2b",
+        "type": "comment",
+        "z": "5b4baad7e4c37dfa",
+        "name": "msg.broker and/or msg.topic must be defined",
+        "info": "",
+        "x": 350,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "68757dfe263f573a",
+        "type": "debug",
+        "z": "5b4baad7e4c37dfa",
+        "name": "print connection status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "status.text",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 950,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "0aa7bfe2d8c09a09",
+        "type": "status",
+        "z": "5b4baad7e4c37dfa",
+        "name": "watch connection status",
+        "scope": [
+            "8d4269d094e75b68"
+        ],
+        "x": 670,
+        "y": 560,
+        "wires": [
+            [
+                "68757dfe263f573a",
+                "4427179a4034432a",
+                "d1d1610c81aee082"
+            ]
+        ]
+    },
+    {
+        "id": "0948fa42ef5e37c5",
+        "type": "switch",
+        "z": "5b4baad7e4c37dfa",
+        "name": "if broker property is undefined",
+        "property": "broker",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "istype",
+                "v": "undefined",
+                "vt": "undefined"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 690,
+        "y": 420,
+        "wires": [
+            [
+                "0f7677884a8717ed",
+                "e0f08fe8a29bbc42"
+            ],
+            [
+                "234668ee1c3da49f",
+                "f795aa2f518f4ced"
+            ]
+        ]
+    },
+    {
+        "id": "234668ee1c3da49f",
+        "type": "change",
+        "z": "5b4baad7e4c37dfa",
+        "name": "store broker configuration and echo",
+        "rules": [
+            {
+                "t": "move",
+                "p": "broker",
+                "pt": "msg",
+                "to": "broker",
+                "tot": "flow"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "broker",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1070,
+        "y": 500,
+        "wires": [
+            [
+                "7a11067d487e9f39",
+                "92339c7f971247a5"
+            ]
+        ]
+    },
+    {
+        "id": "e09dda517fb31f29",
+        "type": "change",
+        "z": "5b4baad7e4c37dfa",
+        "name": "retrieve broker configuration and connect",
+        "rules": [
+            {
+                "t": "move",
+                "p": "broker",
+                "pt": "flow",
+                "to": "broker",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "action",
+                "pt": "msg",
+                "to": "connect",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1020,
+        "y": 800,
+        "wires": [
+            [
+                "8d4269d094e75b68"
+            ]
+        ]
+    },
+    {
+        "id": "0f7677884a8717ed",
+        "type": "switch",
+        "z": "5b4baad7e4c37dfa",
+        "name": "compare status to \"connected\"",
+        "property": "status.text",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "node-red:common.status.connected",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1050,
+        "y": 460,
+        "wires": [
+            [
+                "d0dcfbd2a105bcfa",
+                "b8b0147b55b30a10"
+            ],
+            [
+                "9d32d4f8b3ea77a7"
+            ]
+        ]
+    },
+    {
+        "id": "d0dcfbd2a105bcfa",
+        "type": "change",
+        "z": "5b4baad7e4c37dfa",
+        "name": "subscribe",
+        "rules": [
+            {
+                "t": "set",
+                "p": "action",
+                "pt": "msg",
+                "to": "subscribe",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1340,
+        "y": 420,
+        "wires": [
+            [
+                "8d4269d094e75b68"
+            ]
+        ]
+    },
+    {
+        "id": "9d32d4f8b3ea77a7",
+        "type": "debug",
+        "z": "5b4baad7e4c37dfa",
+        "name": "error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1330,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "4ce0ebb3280e174f",
+        "type": "comment",
+        "z": "5b4baad7e4c37dfa",
+        "name": "faire unsubscribe avant ?",
+        "info": "",
+        "x": 1390,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "f795aa2f518f4ced",
+        "type": "debug",
+        "z": "5b4baad7e4c37dfa",
+        "name": "is defined",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "7a11067d487e9f39",
+        "type": "debug",
+        "z": "5b4baad7e4c37dfa",
+        "name": "print flow.broker",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1400,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "92339c7f971247a5",
+        "type": "change",
+        "z": "5b4baad7e4c37dfa",
+        "name": "send disconnect order",
+        "rules": [
+            {
+                "t": "set",
+                "p": "action",
+                "pt": "msg",
+                "to": "disconnect",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1420,
+        "y": 540,
+        "wires": [
+            [
+                "8d4269d094e75b68",
+                "0a8474299acb79a8"
+            ]
+        ]
+    },
+    {
+        "id": "e0f08fe8a29bbc42",
+        "type": "debug",
+        "z": "5b4baad7e4c37dfa",
+        "name": "is undefined",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 950,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "0a8474299acb79a8",
+        "type": "debug",
+        "z": "5b4baad7e4c37dfa",
+        "name": "print sent msg",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1740,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "5cef0af4389b4eec",
+        "type": "comment",
+        "z": "5b4baad7e4c37dfa",
+        "name": "checker si topic defined",
+        "info": "",
+        "x": 1020,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "4427179a4034432a",
+        "type": "switch",
+        "z": "5b4baad7e4c37dfa",
+        "name": "compare status to \"disconnected\"",
+        "property": "status.text",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "node-red:common.status.disconnected",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 980,
+        "y": 740,
+        "wires": [
+            [
+                "e09dda517fb31f29"
+            ]
+        ]
+    },
+    {
+        "id": "d1d1610c81aee082",
+        "type": "change",
+        "z": "5b4baad7e4c37dfa",
+        "name": "copy message status to flow status",
+        "rules": [
+            {
+                "t": "set",
+                "p": "status",
+                "pt": "flow",
+                "to": "status",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 980,
+        "y": 680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3d447ca3b22c0814",
+        "type": "mqtt-broker",
+        "name": "default",
+        "broker": "localhost",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    }
+]

@@ -1,0 +1,453 @@
+[
+    {
+        "id": "077885e984bf01d2",
+        "type": "subflow",
+        "name": "advanced mqtt out",
+        "info": "msg.topic and msg.payload must be defined",
+        "category": "",
+        "in": [
+            {
+                "x": 440,
+                "y": 160,
+                "wires": [
+                    {
+                        "id": "5d9144931885112b"
+                    }
+                ]
+            }
+        ],
+        "out": [],
+        "env": [],
+        "meta": {},
+        "color": "#F4B2FF",
+        "icon": "node-red/bridge.svg",
+        "status": {
+            "x": 780,
+            "y": 420,
+            "wires": [
+                {
+                    "id": "2a398f9b22f32943",
+                    "port": 0
+                }
+            ]
+        }
+    },
+    {
+        "id": "0c781489b1d1afb8",
+        "type": "debug",
+        "z": "077885e984bf01d2",
+        "name": "print publish topic",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "topic",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1250,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "d1b5153af47b8637",
+        "type": "comment",
+        "z": "077885e984bf01d2",
+        "name": "msg.broker and/or msg.topic must be defined",
+        "info": "",
+        "x": 230,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "7091246447cd07a4",
+        "type": "debug",
+        "z": "077885e984bf01d2",
+        "name": "print connection status",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "status.text",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 870,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "2a398f9b22f32943",
+        "type": "status",
+        "z": "077885e984bf01d2",
+        "name": "watch connection status",
+        "scope": [
+            "4cd701ce976298ce"
+        ],
+        "x": 550,
+        "y": 360,
+        "wires": [
+            [
+                "7091246447cd07a4",
+                "db0afc8ee5c1551c",
+                "2789a984c52e3c7b"
+            ]
+        ]
+    },
+    {
+        "id": "5d9144931885112b",
+        "type": "switch",
+        "z": "077885e984bf01d2",
+        "name": "if broker property is undefined",
+        "property": "broker",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "istype",
+                "v": "undefined",
+                "vt": "undefined"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 570,
+        "y": 220,
+        "wires": [
+            [
+                "9f198000cc2e4e70",
+                "c4aa7745359d6d53"
+            ],
+            [
+                "51451d458ddfb408",
+                "6bc112aff1e6c2b9"
+            ]
+        ]
+    },
+    {
+        "id": "51451d458ddfb408",
+        "type": "change",
+        "z": "077885e984bf01d2",
+        "name": "store broker configuration and echo",
+        "rules": [
+            {
+                "t": "move",
+                "p": "broker",
+                "pt": "msg",
+                "to": "broker",
+                "tot": "flow"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "broker",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 950,
+        "y": 300,
+        "wires": [
+            [
+                "4e1e6754165e21af",
+                "65b06eeceb3f6b8d"
+            ]
+        ]
+    },
+    {
+        "id": "db0afc8ee5c1551c",
+        "type": "switch",
+        "z": "077885e984bf01d2",
+        "name": "compare status to \"disconnected\"",
+        "property": "status.text",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "node-red:common.status.disconnected",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 900,
+        "y": 540,
+        "wires": [
+            [
+                "9c4f57d5f6326711"
+            ]
+        ]
+    },
+    {
+        "id": "9c4f57d5f6326711",
+        "type": "change",
+        "z": "077885e984bf01d2",
+        "name": "retrieve broker configuration and connect",
+        "rules": [
+            {
+                "t": "move",
+                "p": "broker",
+                "pt": "flow",
+                "to": "broker",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "action",
+                "pt": "msg",
+                "to": "connect",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 940,
+        "y": 600,
+        "wires": [
+            [
+                "4cd701ce976298ce"
+            ]
+        ]
+    },
+    {
+        "id": "9f198000cc2e4e70",
+        "type": "switch",
+        "z": "077885e984bf01d2",
+        "name": "compare status to \"connected\"",
+        "property": "status.text",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "node-red:common.status.connected",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 930,
+        "y": 260,
+        "wires": [
+            [
+                "0c781489b1d1afb8",
+                "4cd701ce976298ce"
+            ],
+            [
+                "049e388e784d93f5"
+            ]
+        ]
+    },
+    {
+        "id": "049e388e784d93f5",
+        "type": "debug",
+        "z": "077885e984bf01d2",
+        "name": "error",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1210,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "6bc112aff1e6c2b9",
+        "type": "debug",
+        "z": "077885e984bf01d2",
+        "name": "is defined",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "4e1e6754165e21af",
+        "type": "debug",
+        "z": "077885e984bf01d2",
+        "name": "print flow.broker",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1280,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "65b06eeceb3f6b8d",
+        "type": "change",
+        "z": "077885e984bf01d2",
+        "name": "send disconnect order",
+        "rules": [
+            {
+                "t": "set",
+                "p": "action",
+                "pt": "msg",
+                "to": "disconnect",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1300,
+        "y": 340,
+        "wires": [
+            [
+                "49373c9bc3a077e4",
+                "4cd701ce976298ce"
+            ]
+        ]
+    },
+    {
+        "id": "c4aa7745359d6d53",
+        "type": "debug",
+        "z": "077885e984bf01d2",
+        "name": "is undefined",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "49373c9bc3a077e4",
+        "type": "debug",
+        "z": "077885e984bf01d2",
+        "name": "print sent msg",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1620,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "e4c44596d64aefac",
+        "type": "comment",
+        "z": "077885e984bf01d2",
+        "name": "checker si topic defined",
+        "info": "",
+        "x": 900,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "4cd701ce976298ce",
+        "type": "mqtt out",
+        "z": "077885e984bf01d2",
+        "name": "mqtt out",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "3d447ca3b22c0814",
+        "x": 1600,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "2789a984c52e3c7b",
+        "type": "change",
+        "z": "077885e984bf01d2",
+        "name": "copy message status to flow status",
+        "rules": [
+            {
+                "t": "set",
+                "p": "status",
+                "pt": "flow",
+                "to": "status",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 900,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3d447ca3b22c0814",
+        "type": "mqtt-broker",
+        "name": "default",
+        "broker": "localhost",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    }
+]
