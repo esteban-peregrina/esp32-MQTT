@@ -2,3 +2,4 @@
 **/.pio/
 node-RED/backups/
 **/credentials.h
+.DS_store
